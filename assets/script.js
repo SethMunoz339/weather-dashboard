@@ -36,7 +36,7 @@
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     displaySearchHistory();
 
-    // Fetch current weather data
+    // Fetch latitude and longitude  data of a city by name 
     var cityCallURL = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
 
     fetch(cityCallURL)
@@ -45,9 +45,9 @@
     })
 
     .then(function (data) {
-      // console.log(data[0])
-      var lat = data.lat
-      var lon = data.long
+  
+      var lat = data[0].lat
+      var lon = data[0].lon
       console.log(lat)
       console.log(lon)
 
@@ -61,12 +61,12 @@
     .then(function (data) {
       console.log(data)
       // Display current weather conditions
-      for (var i = 0; i < data.list.length; i++) {
-        var currentWeather = data.list[i];
+      for (var i = 0; i < data.length; i++) {
+        var currentWeather = data[0];
       currentWeather = $('#current-weather');
       currentWeather.empty();
 
-      var cityName = $('<h2>').text(data[0].name);
+      var cityName = $('<h2>').text(data.name);
       var date = dayjs();$('<h4>').text(date.format('MMM D YYYY'));
       var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + data.list.weather.icon + '.png');
       var temperature = $('<p>').text('Temperature: ' + data.list.main.temp + ' °F');
