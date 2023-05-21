@@ -37,22 +37,36 @@
     displaySearchHistory();
 
     // Fetch current weather data
-    var currentWeatherURL = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
+    var cityCallURL = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
 
-    fetch(currentWeatherURL)
+    fetch(cityCallURL)
     .then(function (response) {
       return response.json();
     })
+
+    .then(function (data) {
+      // console.log(data[0])
+      var lat = data.lat
+      var lon = data.long
+      console.log(lat)
+      console.log(lon)
+
+      var currentWeatherURL ='https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=9f33769f96f0baebca5950ba5abe7d0f'
+
+      fetch(currentWeatherURL)
+    .then(function (response) {
+      return response.json();
+    })
+
     .then(function (data) {
       console.log(data)
-
       // Display current weather conditions
       for (var i = 0; i < data.list.length; i++) {
         var currentWeather = data.list[i];
       currentWeather = $('#current-weather');
       currentWeather.empty();
 
-      var cityName = $('<h2>').text(data[i].name);
+      var cityName = $('<h2>').text(data[0].name);
       var date = dayjs();$('<h4>').text(date.format('MMM D YYYY'));
       var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + data.list.weather.icon + '.png');
       var temperature = $('<p>').text('Temperature: ' + data.list.main.temp + ' °F');
@@ -60,7 +74,7 @@
       var windSpeed = $('<p>').text('Wind Speed: ' + data.list.wind.speed + ' MPH');
 
       currentWeather.append(cityName, date, icon, temperature, humidity, windSpeed);
-    }});
+        };
 
     // Fetch 5-day forecast data
     var forecastURL = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
@@ -102,7 +116,7 @@
 
       forecast.append(forecastList);
     });
-  });
+  })})});
 
   // Handle search history click event
   $(document).on('click', '.list-group-item', function() {
