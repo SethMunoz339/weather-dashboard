@@ -1,25 +1,113 @@
-// creates a button to clear local storage
-document.getElementById('clearButton').addEventListener('click', function() {
+// $(document).ready(function() {
+//   // Load search history from localStorage
+  var searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+ 
+  
+  // Display search history
+  function displaySearchHistory() {
+    $('#search-history').empty();
+    for (var i = 0; i < searchHistory.length; i++) {
+      var li = $('<li>').addClass('list-group-item').text(searchHistory[i]);
+      $('#search-history').append(li);
+    }
+  }
+
+  displaySearchHistory();
+
+  document.getElementById('clearButton').addEventListener('click', function() {
     localStorage.clear();
     alert('Search history has been cleared. Refresh the page.');
-});
+  });
 
-var currentWeatherURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=[apikey]';
+  // Handle form submission
+  $('#search-form').submit(function(event) {
+    event.preventDefault();
+    var city = $('#city-input').val().trim();
 
-    $.ajax({
-      url: currentWeatherURL,
-      method: 'GET'
-    }).then(function(response) {
+    if (city === '') {
+      return;
+    }
+
+    // Clear input field
+    $('#city-input').val('');
+
+    // Add city to search history
+    searchHistory.push(city);
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    displaySearchHistory();
+
+    // Fetch current weather data
+    var currentWeatherURL = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
+
+    fetch(currentWeatherURL)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data)
+
       // Display current weather conditions
-      var currentWeather = $('#current-weather');
+      for (var i = 0; i < data.list.length; i++) {
+        var currentWeather = data.list[i];
+      currentWeather = $('#current-weather');
       currentWeather.empty();
 
-      var cityName = $('<h2>').text(response.name);
+      var cityName = $('<h2>').text(data[i].name);
       var date = dayjs();$('<h4>').text(date.format('MMM D YYYY'));
-      var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + response.weather[0].icon + '.png');
-      var temperature = $('<p>').text('Temperature: ' + response.main.temp + ' °F');
-      var humidity = $('<p>').text('Humidity: ' + response.main.humidity + '%');
-      var windSpeed = $('<p>').text('Wind Speed: ' + response.wind.speed + ' MPH');
+      var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + data.list.weather.icon + '.png');
+      var temperature = $('<p>').text('Temperature: ' + data.list.main.temp + ' °F');
+      var humidity = $('<p>').text('Humidity: ' + data.list.main.humidity + '%');
+      var windSpeed = $('<p>').text('Wind Speed: ' + data.list.wind.speed + ' MPH');
 
       currentWeather.append(cityName, date, icon, temperature, humidity, windSpeed);
+    }});
+
+    // Fetch 5-day forecast data
+    var forecastURL = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
+    
+    fetch(forecastURL)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data)
+      // Display forecast
+      var forecast = $('#forecast');
+      forecast.empty();
+
+      var forecastTitle = $('<h3>').text('5-Day Forecast');
+      forecast.append(forecastTitle);
+
+      var forecastList = $('<div>').addClass('row');
+
+      for (var i = 0; i < response.list.length; i++) {
+        var forecastItem = response.list[i];
+
+        if (forecastItem.dt_txt.indexOf('15:00:00') !== -1) {
+          var col = $('<div>').addClass('col-md-2');
+          var card = $('<div>').addClass('card bg-primary text-white');
+          var cardBody = $('<div>').addClass('card-body p-2');
+
+          var date = dayjs();$('<h5>').text(date.format('MMM D YYYY'));
+          var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + forecastItem.weather[0].icon + '.png');
+          var temperature = $('<p>').text('Temp: ' + forecastItem.main.temp + ' °F');
+          var humidity = $('<p>').text('Humidity: ' + forecastItem.main.humidity + '%');
+
+          cardBody.append(date, icon, temperature, humidity);
+          card.append(cardBody);
+          col.append(card);
+          forecastList.append(col);
+        }
+      }
+
+      forecast.append(forecastList);
     });
+  });
+
+  // Handle search history click event
+  $(document).on('click', '.list-group-item', function() {
+    var city = $(this).text();
+    $('#city-input').val(city);
+    $('#search-form').submit();
+  });
+
