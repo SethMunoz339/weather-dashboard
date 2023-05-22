@@ -4,7 +4,7 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
   var searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
  
   
-  // Display search history
+  // Display search and clear search history
   function displaySearchHistory() {
     $('#search-history').empty();
     for (var i = 0; i < searchHistory.length; i++) {
@@ -39,7 +39,7 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
     displaySearchHistory();
 
     // Fetch latitude and longitude  data of a city by name 
-    var cityCallURL = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
+    var cityCallURL = 'https://api.openweathermap.org/geo/1.0/direct?q='+ city + '&appid=9f33769f96f0baebca5950ba5abe7d0f';
 
     fetch(cityCallURL)
     .then(function (response) {
@@ -62,12 +62,12 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
 
     .then(function (data) {
       console.log(data)
-
+      // display current weather
       var currentWeather = $('#current-weather');
       currentWeather.empty()
       var cityName = $('<h2>').text(data.name);
       currentWeather.append( cityName);
-      var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png');
+      var icon = $('<img>').attr('src', 'https://openweathermap.org/img/w/' + data.weather[0].icon + '.png');
       currentWeather.append( icon);
       var temperature = $('<p>').text('Temperature: ' + data.main.temp + ' °F');
       currentWeather.append( temperature);
@@ -106,7 +106,7 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
           var cardBody = $('<div>').addClass('card-body p-1');
 
           var date = $('<h5>').text(forecastItem.dt_txt);
-          var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + forecastItem.weather[0].icon + '.png');
+          var icon = $('<img>').attr('src', 'https://openweathermap.org/img/w/' + forecastItem.weather[0].icon + '.png');
           var temperature = $('<p>').text('Temp: ' + forecastItem.main.temp + ' °F');
           var humidity = $('<p>').text('Humidity: ' + forecastItem.main.humidity + '%');
 
