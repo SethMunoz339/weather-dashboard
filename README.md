@@ -1,7 +1,7 @@
 # weather-dashboard
 ## Description
 
-The purpose of this webpage is to search for the current weather and 5 day forecast in a chosen city
+The purpose of this webpage is to search for the current weather and 5 day forecast in a chosen city.
 
 ## Installation
 
