@@ -1,4 +1,5 @@
-// $(document).ready(function() {
+var timeEl= dayjs();
+$('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
 //   // Load search history from localStorage
   var searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
  
@@ -23,6 +24,7 @@
   $('#search-form').submit(function(event) {
     event.preventDefault();
     var city = $('#city-input').val().trim();
+
 
     if (city === '') {
       return;
@@ -62,10 +64,9 @@
       console.log(data)
 
       var currentWeather = $('#current-weather');
+      currentWeather.empty()
       var cityName = $('<h2>').text(data.name);
       currentWeather.append( cityName);
-      var timeEl= dayjs();$('<h4>').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
-      currentWeather.append( timeEl);
       var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png');
       currentWeather.append( icon);
       var temperature = $('<p>').text('Temperature: ' + data.main.temp + ' °F');
@@ -89,7 +90,7 @@
       console.log(data)
       // Display forecast
       var forecast = $('#forecast');
-     
+      // forcast.empty()
 
       var forecastTitle = $('<h3>').text('5-Day Forecast');
       forecast.append(forecastTitle);
@@ -97,7 +98,7 @@
       var forecastList = $('<div>').addClass('row');
 
       for (var i = 0; i < data.length; i++) {
-        var forecastItem = data[i];
+        var forecastItem = data;
 
         if (forecastItem.dt_txt.indexOf('15:00:00') !== -1) {
           var col = $('<div>').addClass('col-md-2');
