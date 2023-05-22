@@ -101,11 +101,11 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
         var forecastItem = data.list[i];
 
         if (forecastItem.dt_txt.indexOf('15:00:00') !== -1) {
-          var col = $('<div>').addClass('col-md-2');
+          var col = $('<div>').addClass('col-md-4');
           var card = $('<div>').addClass('card bg-primary text-white');
           var cardBody = $('<div>').addClass('card-body p-1');
 
-          var date = dayjs();$('<h5>').text(date.format('MMM D YYYY'));
+          var date = $('<h5>').text(forecastItem.dt_txt);
           var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + forecastItem.weather[0].icon + '.png');
           var temperature = $('<p>').text('Temp: ' + forecastItem.main.temp + ' °F');
           var humidity = $('<p>').text('Humidity: ' + forecastItem.main.humidity + '%');
