@@ -90,20 +90,20 @@ $('#time').text(timeEl.format('dddd, MMMM D YYYY, h:mm a'));
       console.log(data)
       // Display forecast
       var forecast = $('#forecast');
-      // forcast.empty()
+      forecast.empty()
 
       var forecastTitle = $('<h3>').text('5-Day Forecast');
       forecast.append(forecastTitle);
 
       var forecastList = $('<div>').addClass('row');
 
-      for (var i = 0; i < data.length; i++) {
-        var forecastItem = data;
+      for (var i = 0; i < data.list.length; i++) {
+        var forecastItem = data.list[i];
 
         if (forecastItem.dt_txt.indexOf('15:00:00') !== -1) {
           var col = $('<div>').addClass('col-md-2');
           var card = $('<div>').addClass('card bg-primary text-white');
-          var cardBody = $('<div>').addClass('card-body p-2');
+          var cardBody = $('<div>').addClass('card-body p-1');
 
           var date = dayjs();$('<h5>').text(date.format('MMM D YYYY'));
           var icon = $('<img>').attr('src', 'http://openweathermap.org/img/w/' + forecastItem.weather[0].icon + '.png');
